@@ -162,13 +162,7 @@ export async function resolveConfig(
       }
 
       if (loadResult.config.preload) {
-        if (Array.isArray(loadResult.config.preload)) {
-          loadResult.config.preload = loadResult.config.preload.map(normalizePreloadViteConfig)
-        } else {
-          loadResult.config.preload = normalizePreloadViteConfig(loadResult.config.preload)
-        }
-
-        function normalizePreloadViteConfig(preloadConfig: InlineUserConfig): InlineUserConfig {
+        const normalizePreloadViteConfig = (preloadConfig: InlineUserConfig): InlineUserConfig => {
           const preloadViteConfig: InlineUserConfig = mergeConfig(preloadConfig, deepClone(config))
 
           preloadViteConfig.mode = inlineConfig.mode || preloadViteConfig.mode || defaultMode
@@ -185,6 +179,12 @@ export async function resolveConfig(
           ])
 
           return preloadViteConfig
+        }
+
+        if (Array.isArray(loadResult.config.preload)) {
+          loadResult.config.preload = loadResult.config.preload.map(normalizePreloadViteConfig)
+        } else {
+          loadResult.config.preload = normalizePreloadViteConfig(loadResult.config.preload)
         }
       }
 
